@@ -229,4 +229,48 @@ public class TopologyKeywords {
 			KeywordUtil.markPassed('PASS: Topology Not Created.')
 		}
 	}
+	
+	@Keyword
+	def check_device_added_for_monitoring(String a, String b, String c) {
+		def url = "http://10.216.35.242:9200/longevity_monitor_device/_search?q=device:"+a+"+user:"+b+"+longevity_submission_id:"+c
+		def get = new URL(url).openConnection();
+		def getRC = get.getResponseCode();
+		//log.logInfo(getRC);
+		def resp = null;
+		if(getRC.equals(200)) {
+			resp = get.getInputStream().getText();
+
+		}
+		def json_resp = new JSONObject(resp)
+		def doc_total = json_resp.get('hits').get('total')
+		//KeywordUtil.logInfo('Total Doc: '+doc_total.toString())
+		if (doc_total>=1){
+			KeywordUtil.markPassed('PASS: Device Added.')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: DEVICE NOT ADDED.')
+		}
+	}
+	
+	@Keyword
+	def check_device_delete_for_monitoring(String a, String b, String c) {
+		def url = "http://10.216.35.242:9200/longevity_monitor_device/_search?q=device:"+a+"+user:"+b+"+longevity_submission_id:"+c
+		def get = new URL(url).openConnection();
+		def getRC = get.getResponseCode();
+		//log.logInfo(getRC);
+		def resp = null;
+		if(getRC.equals(200)) {
+			resp = get.getInputStream().getText();
+			
+		}
+		def json_resp = new JSONObject(resp)
+		def doc_total = json_resp.get('hits').get('total')
+		KeywordUtil.logInfo('Total Doc: '+doc_total.toString())
+		if (doc_total==0){
+			KeywordUtil.markPassed('PASS: Device Removed.')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: DEVICE NOT Removed.')
+		}
+	}
 }
