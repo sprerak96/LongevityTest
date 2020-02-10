@@ -15,5 +15,5 @@ import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 import internal.GlobalVariable as GlobalVariable
 
-CustomKeywords.'com.test.demo.TopologyKeywords.check_designed_topology_status_irregular'('preraks_test16')
+CustomKeywords.'com.test.demo.TopologyKeywords.check_fusion_submit_status'('preraks_sample_run_2_add_new')
 

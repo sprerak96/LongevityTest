@@ -20,6 +20,12 @@ import static org.assertj.core.api.Assertions.*
 response = WS.sendRequest(findTestObject('API OBJECT/GENERATE TOPOLOGY', [('command') : 'python3 /var/www/html/masterupdate/tools/autobuild_topology.py --params_list /volume/regressions/toby/test-suites/MTS/test-scripts/protocols/MPLS/mpls_mts.vmx.params,/volume/regressions/toby/test-suites/MTS/test-scripts/protocols/VPN/CCC/ccc_mts.vmx.params,/volume/regressions/toby/test-suites/MTS/test-scripts/protocols/VPN/CCC/ccc_mts.vptx.params --user ramkrish --domain snp-service-dut-mx480 --topology_id ramkrish_protocol_all_master_topology --longevity_submission_id ramkrish_protocol_all']))
 
 WS.verifyResponseStatusCode(response, 200)
+//KeywordUtil.logInfo(response.getResponseText())
+CustomKeywords.'com.test.demo.TopologyKeywords.generate_topology_response'(response.getResponseText(), 'DONE')
 
-assertThat(response.getResponseText()).contains('DONE')
+response = WS.sendRequest(findTestObject('API OBJECT/GENERATE TOPOLOGY', [('command') : 'python3 /var/www/html/masterupdate/tools/autobuild_topology.py --params_list /volume/regressions/toby/test-suites/MTS/test-scripts/protocols/MPLS/mpls_mts.vmx.params,/volume/regressions/toby/test-suites/MTS/test-scripts/protocols/VPN/CCC/ccc_mts.vmx.params,/volume/regressions/toby/test-suites/MTS/test-scripts/protocols/VPN/CCC/ccc_mts --user ramkrish --domain snp-service-dut-mx480 --topology_id ramkrish_protocol_all_master_topology --longevity_submission_id ramkrish_protocol_all']))
+
+WS.verifyResponseStatusCode(response, 200)
+
+CustomKeywords.'com.test.demo.TopologyKeywords.generate_topology_response'(response.getResponseText(), 'FAIL')
 

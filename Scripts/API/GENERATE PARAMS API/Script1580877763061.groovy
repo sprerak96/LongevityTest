@@ -22,5 +22,12 @@ response = WS.sendRequest(findTestObject('API OBJECT/GENERATE PARAMS', [('topolo
 
 WS.verifyResponseStatusCode(response, 200)
 
-assertThat(response.getResponseText()).contains('PASS')
+CustomKeywords.'com.test.demo.TopologyKeywords.generate_params_response'(response.getResponseText(), 'PASS')
+
+response = WS.sendRequest(findTestObject('API OBJECT/GENERATE PARAMS', [('topology_id') : 'preraksx_prerak_test1_master_topology'
+            , ('user') : 'preraksx', ('longevity_submission_id') : 'preraks_prerak_test1']))
+
+WS.verifyResponseStatusCode(response, 200)
+
+CustomKeywords.'com.test.demo.TopologyKeywords.generate_params_response'(response.getResponseText(), 'FAIL')
 

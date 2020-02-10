@@ -21,5 +21,11 @@ response = WS.sendRequest(findTestObject('API OBJECT/CHECK USER', [('user') : 'p
 
 WS.verifyResponseStatusCode(response, 200)
 
-assertThat(response.getResponseText()).contains('present')
+CustomKeywords.'com.test.demo.TopologyKeywords.check_user_response'(response.getResponseText(), 'unavailable')
+
+response = WS.sendRequest(findTestObject('API OBJECT/CHECK USER', [('user') : 'preraks']))
+
+WS.verifyResponseStatusCode(response, 200)
+
+CustomKeywords.'com.test.demo.TopologyKeywords.check_user_response'(response.getResponseText(), 'present')
 

@@ -16,9 +16,12 @@ import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 import internal.GlobalVariable as GlobalVariable
 import com.kms.katalon.core.util.KeywordUtil as KeywordUtil
 import static org.assertj.core.api.Assertions.*
-response = WS.sendRequest(findTestObject('API OBJECT/JOB SUBMIT', [('topology_id') : '', ('user') : '', ('longevity_submission_id') : ''
-            , ('fusion_submission_name') : '', ('domain') : '', ('type') : '', ('test_indices') : '']))
+
+response = WS.sendRequest(findTestObject('API OBJECT/JOB SUBMIT', [('topology_id') : 'preraks_katalon_test_master_topology'
+            , ('user') : 'preraks', ('longevity_submission_id') : 'preraks_katalon_test', ('fusion_submission_name') : 'preraks_katalon_test_1581329128844'
+            , ('domain') : 'rbu-snp-smoke', ('type') : 'auto', ('test_indices') : 'fibv4_ebgp_route_scale']))
 
 WS.verifyResponseStatusCode(response, 200)
 
-assertThat(response.getResponseText()).contains('present')
+CustomKeywords.'com.test.demo.TopologyKeywords.check_autobuild_topology_status'('preraks_katalon_test')
+

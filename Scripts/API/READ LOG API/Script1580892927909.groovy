@@ -22,5 +22,12 @@ response = WS.sendRequest(findTestObject('API OBJECT/READ LOG', [('file') : '/vo
 
 WS.verifyResponseStatusCode(response, 200)
 
-assertThat(response.getResponseText()).contains('present')
+CustomKeywords.'com.test.demo.TopologyKeywords.destroy_response'(response.getResponseText(), 'present')
+
+response = WS.sendRequest(findTestObject('API OBJECT/READ LOG', [('file') : '/volume/RBU_SNP_REG/Longevity_Storage/jsonToParam/preraks/preraks_sample_run_2/preraks_sample_run_2.params'
+	, ('user') : 'preraksx']))
+
+WS.verifyResponseStatusCode(response, 200)
+
+CustomKeywords.'com.test.demo.TopologyKeywords.destroy_response'(response.getResponseText(), 'unavailable')
 

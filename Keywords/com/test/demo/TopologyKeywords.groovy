@@ -35,7 +35,7 @@ public class TopologyKeywords {
 		def timeout = false
 		def loop_count = 0
 		while (loop_status){
-			def url = "http://10.216.35.242:9200/longevity_jobs/_search?q=topology_id:"+a
+			def url = "http://10.216.35.242:9200/longevity_jobs/_search?q=longevity_submission_id:"+a
 			def get = new URL(url).openConnection();
 			def getRC = get.getResponseCode();
 			//log.logInfo(getRC);
@@ -229,10 +229,10 @@ public class TopologyKeywords {
 			KeywordUtil.markPassed('PASS: Topology Not Created.')
 		}
 	}
-	
+
 	@Keyword
 	def check_device_added_for_monitoring(String a, String b, String c) {
-		def url = "http://10.216.35.242:9200/longevity_monitor_device/_search?q=device:"+a+"+user:"+b+"+longevity_submission_id:"+c
+		def url = "http://10.216.35.242:9200/longevity_monitor_device/_search?q=device:"+a+"%20AND%20user:"+b+"%20AND%20longevity_submission_id:"+c
 		def get = new URL(url).openConnection();
 		def getRC = get.getResponseCode();
 		//log.logInfo(getRC);
@@ -243,7 +243,7 @@ public class TopologyKeywords {
 		}
 		def json_resp = new JSONObject(resp)
 		def doc_total = json_resp.get('hits').get('total')
-		//KeywordUtil.logInfo('Total Doc: '+doc_total.toString())
+		//KeywordUtil.logInfo(json_resp.toString())
 		if (doc_total>=1){
 			KeywordUtil.markPassed('PASS: Device Added.')
 		}
@@ -251,21 +251,21 @@ public class TopologyKeywords {
 			KeywordUtil.markFailed('ERROR: DEVICE NOT ADDED.')
 		}
 	}
-	
+
 	@Keyword
 	def check_device_delete_for_monitoring(String a, String b, String c) {
-		def url = "http://10.216.35.242:9200/longevity_monitor_device/_search?q=device:"+a+"+user:"+b+"+longevity_submission_id:"+c
+		def url = "http://10.216.35.242:9200/longevity_monitor_device/_search?q=device:"+a+"%20AND%20user:"+b+"%20AND%20longevity_submission_id:"+c
 		def get = new URL(url).openConnection();
 		def getRC = get.getResponseCode();
 		//log.logInfo(getRC);
 		def resp = null;
 		if(getRC.equals(200)) {
 			resp = get.getInputStream().getText();
-			
+			KeywordUtil.logInfo(resp.toString())
 		}
 		def json_resp = new JSONObject(resp)
 		def doc_total = json_resp.get('hits').get('total')
-		KeywordUtil.logInfo('Total Doc: '+doc_total.toString())
+		//KeywordUtil.logInfo('Total Doc: '+doc_total.toString())
 		if (doc_total==0){
 			KeywordUtil.markPassed('PASS: Device Removed.')
 		}
@@ -273,4 +273,140 @@ public class TopologyKeywords {
 			KeywordUtil.markFailed('ERROR: DEVICE NOT Removed.')
 		}
 	}
+
+	@Keyword
+	def check_user_response(String a,String b) {
+		if (a.contains(b)){
+			KeywordUtil.markPassed('PASS: User Data Successfully Checked')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: Sser Data Not Checked.')
+		}
+	}
+
+	@Keyword
+	def generate_params_response(String a,String b) {
+		if (a.contains(b)){
+			KeywordUtil.markPassed('PASS: Generate Params API function successfull')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: Generate Params API function unsuccessfull')
+		}
+	}
+
+	@Keyword
+	def generate_topology_response(String a,String b) {
+		if (a.contains(b)){
+			KeywordUtil.markPassed('PASS: Generate Topology API function successfull')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: Generate Topology API function unsuccessfull')
+		}
+	}
+
+	@Keyword
+	def destroy_response(String a,String b) {
+		if (a.contains(b)){
+			KeywordUtil.markPassed('PASS: Destroy API function successfull')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: Destroy API function unsuccessfull')
+		}
+	}
+
+	@Keyword
+	def read_log_response(String a,String b) {
+		if (a.contains(b)){
+			KeywordUtil.markPassed('PASS: Read Log API function successfull')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: Read Log API function unsuccessfull')
+		}
+	}
+
+	@Keyword
+	def check_fusion_submit_status(String a) {
+		//KeywordLogger log = new KeywordLogger()
+		//log.logInfo("yourMsg")
+		def loop_status = true
+		def topology_doc = null
+		def timeout = false
+		def loop_count = 0
+		while (loop_status){
+			def url = "http://10.216.35.242:9200/longevity_jobs/_search?q=longevity_submission_id:"+a
+			def get = new URL(url).openConnection();
+			def getRC = get.getResponseCode();
+			//log.logInfo(getRC);
+			def resp = null;
+			if(getRC.equals(200)) {
+				resp = get.getInputStream().getText();
+
+			}
+			def json_resp = new JSONObject(resp)
+			//log.logInfo(json_resp.toString())
+			def doc_total = json_resp.get('hits').get('total')
+			//KeywordUtil.logInfo('Total Doc: '+doc_total.toString())
+			if (doc_total==1){
+				def doc = json_resp.get('hits').get('hits').get(0).get('_source')
+				if (doc.has("status")){
+					def status = doc.get('status')
+					if (status == 'done'){
+						topology_doc = json_resp.get('hits').get('hits').get(0).get('_source')
+						loop_status = false
+						timeout = false
+					}
+				}
+				else{
+					loop_count += 1
+					TimeUnit.SECONDS.sleep(60);
+					if (loop_count>30){
+						loop_status = false
+						timeout = true
+					}
+				}
+			}
+			else if(doc_total>1){
+				KeywordUtil.markFailed('ERROR: More than one topology with the same name found.')
+				loop_status = false
+			}
+		}
+		if (timeout == true){
+			KeywordUtil.markFailed('ERROR: Fusion Submission Timeout.')
+		}
+		else{
+			if(topology_doc.has('fusion_submission_name')){
+				def fusion_submission_name = topology_doc.get('fusion_submission_name')
+				if(topology_doc.has('fusionsubmission')){
+					def fusionsubmission = topology_doc.get('fusionsubmission')
+					for (int i = 0; i < fusion_submission_name.length(); i++) {
+						def fusion_sub_status = fusionsubmission.get(i)
+						def fusion_sub_name = fusion_submission_name.get(i)
+						//KeywordUtil.logInfo(fusion_sub_status.indexOf('Hello').toString())
+						//KeywordUtil.logInfo(fusion_sub_status.indexOf("=pass").toString())
+						if ((fusion_sub_status.indexOf(fusion_sub_name) >= 0) && (fusion_sub_status.indexOf("=pass") >= 0)){
+							KeywordUtil.markPassed('PASS: Params to Topology Status pass.')
+						}
+						else{
+							KeywordUtil.markFailed('ERROR: Fusion Submission Failed.')
+							break
+						}
+					}
+					//KeywordUtil.markPassed('PASS: Testcases Submitted to Fusion.')
+					//KeywordUtil.logInfo('PASS: Testcases Submitted to Fusion.')
+				}
+				else{
+					KeywordUtil.markFailed('ERROR: Fusion Submission Status List Not Found.')
+				}
+
+
+			}
+			else{
+				KeywordUtil.markFailed('ERROR: Fusion Submission Name List Not Found.')
+			}
+
+
+		}
+
+	}
+
 }

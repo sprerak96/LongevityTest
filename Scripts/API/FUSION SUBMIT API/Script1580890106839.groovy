@@ -17,10 +17,10 @@ import internal.GlobalVariable as GlobalVariable
 import com.kms.katalon.core.util.KeywordUtil as KeywordUtil
 import static org.assertj.core.api.Assertions.*
 
-response = WS.sendRequest(findTestObject('API OBJECT/FUSION SUBMIT', [('topology_id') : '', ('user') : '', ('longevity_submission_id') : ''
-            , ('fusion_submission_name') : '']))
+response = WS.sendRequest(findTestObject('API OBJECT/FUSION SUBMIT', [('topology_id') : 'preraks_sample_run_2_master_topology'
+            , ('user') : 'preraks', ('longevity_submission_id') : 'preraks_sample_run_2_add_new', ('fusion_submission_name') : 'preraks_sample_run_2_add_new_1580880435246']))
 
 WS.verifyResponseStatusCode(response, 200)
 
-assertThat(response.getResponseText()).contains('PASS')
+CustomKeywords.'com.test.demo.TopologyKeywords.check_fusion_submit_status'('preraks_sample_run_2_add_new')
 

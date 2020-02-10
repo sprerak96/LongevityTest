@@ -16,7 +16,16 @@ import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 import internal.GlobalVariable as GlobalVariable
 import com.kms.katalon.core.util.KeywordUtil as KeywordUtil
 import static org.assertj.core.api.Assertions.*
-response = WS.sendRequest(findTestObject('API OBJECT/DESTROY', [('user') : '', ('longevity_submission_id') : '']))
+
+response = WS.sendRequest(findTestObject('API OBJECT/DESTROY', [('user') : 'preraks', ('longevity_submission_id') : 'preraks_sample_run_2_add_new']))
+
 WS.verifyResponseStatusCode(response, 200)
 
-assertThat(response.getResponseText()).contains('PASS')
+CustomKeywords.'com.test.demo.TopologyKeywords.destroy_response'(response.getResponseText(), 'PASS')
+
+response = WS.sendRequest(findTestObject('API OBJECT/DESTROY', [('user') : 'preraks', ('longevity_submission_id') : 'preraks_sample_run__add_new']))
+
+WS.verifyResponseStatusCode(response, 200)
+
+CustomKeywords.'com.test.demo.TopologyKeywords.destroy_response'(response.getResponseText(), 'FAIL')
+
