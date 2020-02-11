@@ -409,4 +409,24 @@ public class TopologyKeywords {
 
 	}
 
+	@Keyword
+	def check_params_response(String a){
+		if(a.length()>0){
+			KeywordUtil.markPassed('PASS: Params Displayed')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: Params Not Displayed')
+		}
+	}
+
+	@Keyword
+	def check_yaml_response(String a){
+		if(a.length()>0){
+			KeywordUtil.markPassed('PASS: YAML Displayed')
+		}
+		else{
+			KeywordUtil.markFailed('ERROR: YAML Not Displayed')
+		}
+	}
+
 }

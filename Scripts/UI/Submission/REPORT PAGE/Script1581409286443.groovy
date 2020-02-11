@@ -15,6 +15,59 @@ import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
 import internal.GlobalVariable as GlobalVariable
 import org.openqa.selenium.Keys as Keys
+import com.kms.katalon.core.util.KeywordUtil as KeywordUtil
+
+WebUI.openBrowser('')
+
+WebUI.navigateToUrl('http://localhost:8000/longevity/report/preraks_katalon_test')
+
+WebUI.click(findTestObject('Object Repository/Page_SNP PORTAL/button_Master Params'))
+
+response = WebUI.getText(findTestObject('Object Repository/Page_SNP PORTAL/p_r0  system model make junipername fv-tags_d6ccdc'))
+
+//KeywordUtil.logInfo(response.toString())
+WebUI.closeBrowser()
+
+CustomKeywords.'com.test.demo.TopologyKeywords.check_params_response'(response.toString())
+
+WebUI.openBrowser('')
+
+WebUI.navigateToUrl('http://localhost:8000/longevity/report/preraks_katalon_test')
+
+WebUI.click(findTestObject('Object Repository/Page_SNP PORTAL/button_Resolved Yaml'))
+
+response = WebUI.getText(findTestObject('Object Repository/Page_SNP PORTAL/p_--- jaas   params volumeRBU_SNP_REGLongev_4f3cb2'))
+//KeywordUtil.logInfo(response.toString())
+WebUI.closeBrowser()
+CustomKeywords.'com.test.demo.TopologyKeywords.check_yaml_response'(response.toString())
+
+WebUI.openBrowser('')
+
+WebUI.navigateToUrl('http://localhost:8000/longevity/report/preraks_katalon_test')
+
+WebUI.click(findTestObject('Object Repository/Page_SNP PORTAL/button_Domain Usage'))
+
+WebUI.closeBrowser()
+
+WebUI.openBrowser('')
+
+WebUI.navigateToUrl('http://localhost:8000/longevity/report/preraks_katalon_test')
+
+WebUI.delay(5)
+
+WebUI.verifyElementClickable(findTestObject('Object Repository/Page_SNP PORTAL/button_Start'))
+
+WebUI.click(findTestObject('Object Repository/Page_SNP PORTAL/button_Start'))
+
+WebUI.delay(5)
+
+WebUI.verifyElementClickable(findTestObject('Object Repository/Page_SNP PORTAL/button_Grafana Link'))
+
+WebUI.verifyElementClickable(findTestObject('Object Repository/Page_SNP PORTAL/button_Stop'))
+
+WebUI.click(findTestObject('Object Repository/Page_SNP PORTAL/button_Stop'))
+
+WebUI.closeBrowser()
 
 WebUI.openBrowser('')
 
